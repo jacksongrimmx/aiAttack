@@ -172,7 +172,7 @@ def create_routes(app, scraper_service, storage_service, scheduler_service):
                 'files': files
             },
             'config': {
-                'scraping_interval_hours': Config.SCRAPING_INTERVAL_HOURS,
+                'scraping_interval_minutes': Config.SCRAPING_INTERVAL_MINUTES,
                 'inegi_url': Config.INEGI_BASE_URL,
                 'data_directory': Config.DATA_DIR
             }
@@ -196,27 +196,27 @@ def create_routes(app, scraper_service, storage_service, scheduler_service):
         try:
             data = request.get_json()
             
-            if not data or 'interval_hours' not in data:
+            if not data or 'interval_minutes' not in data:
                 return jsonify({
                     'status': 'error',
-                    'message': 'Se requiere el parámetro interval_hours'
+                    'message': 'Se requiere el parámetro interval_minutes'
                 }), 400
             
-            interval_hours = data['interval_hours']
+            interval_minutes = data['interval_minutes']
             
-            if not isinstance(interval_hours, (int, float)) or interval_hours <= 0:
+            if not isinstance(interval_minutes, (int, float)) or interval_minutes <= 0:
                 return jsonify({
                     'status': 'error',
-                    'message': 'interval_hours debe ser un número positivo'
+                    'message': 'interval_minutes debe ser un número positivo'
                 }), 400
             
-            success = scheduler_service.update_interval(interval_hours)
+            success = scheduler_service.update_interval(interval_minutes)
             
             if success:
                 return jsonify({
                     'status': 'success',
                     'message': f'Intervalo actualizado correctamente',
-                    'interval_hours': interval_hours
+                    'interval_minutes': interval_minutes
                 }), 200
             else:
                 return jsonify({

@@ -2,6 +2,10 @@
 
 Sistema de web scraping para extraer información del sitio oficial del INEGI (Instituto Nacional de Estadística y Geografía de México).
 
+## ⏰ Cron Job Automático
+
+El sistema ejecuta scraping automático **cada 5 minutos** mediante un scheduler integrado.
+
 ## 🏗️ Arquitectura de Microservicios
 
 Este proyecto está diseñado con una **arquitectura modular de microservicios**:
@@ -9,7 +13,7 @@ Este proyecto está diseñado con una **arquitectura modular de microservicios**
 ### Servicios Principales:
 - **ScraperService** - Servicio de web scraping especializado
 - **StorageService** - Servicio de persistencia y almacenamiento
-- **SchedulerService** - Servicio de tareas programadas
+- **SchedulerService** - Servicio de tareas programadas (Cron Job cada 5 min)
 - **API REST** - Endpoints para interactuar con los servicios
 
 ## 📋 Descripción
@@ -209,12 +213,24 @@ Los datos se guardan en la carpeta `data/`:
 
 ## ⚙️ Configuración
 
-La API está configurada para:
-- Ejecutar scraping automático cada **1 hora**
+La API está configurada en `config.py`:
+- ⏰ **Cron Job automático cada 5 minutos** (configurable)
 - Timeout de conexión: **30 segundos**
 - Puerto: **5000**
+- Host: **0.0.0.0** (accesible desde la red local)
 
-Puedes modificar estos parámetros en `app.py` y `scraper.py`.
+### Cambiar el intervalo del Cron Job:
+
+1. **Editar config.py**:
+```python
+SCRAPING_INTERVAL_MINUTES = 10  # Cambiar a 10 minutos
+```
+
+2. **O usar la API**:
+```powershell
+# Cambiar a 10 minutos
+Invoke-RestMethod -Uri "http://localhost:5000/api/schedule" -Method POST -Body '{"interval_minutes": 10}' -ContentType "application/json"
+```
 
 ## 📝 Notas
 

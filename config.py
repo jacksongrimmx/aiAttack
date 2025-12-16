@@ -28,7 +28,7 @@ class Config:
     LATEST_JSON = 'inegi_latest.json'
     
     # Scheduler
-    SCRAPING_INTERVAL_HOURS = 1
+    SCRAPING_INTERVAL_MINUTES = 5  # Ejecutar cada 5 minutos
     SCHEDULER_TIMEZONE = 'America/Mexico_City'
     
     # Límites de extracción

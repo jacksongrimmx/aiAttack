@@ -1,6 +1,6 @@
 """
 INEGI Web Scraper - Aplicación Principal
-Arquitectura de Microservicios
+Arquitectura de Microservicios con Cron Job cada 5 minutos
 """
 from flask import Flask
 from flask_cors import CORS
@@ -30,7 +30,6 @@ print(f"✓ StorageService inicializado - Data Dir: {Config.DATA_DIR}")
 scheduler_service = SchedulerService(scraper_service, storage_service)
 print(f"✓ SchedulerService inicializado")
 
-
 # Registrar rutas de la API
 create_routes(app, scraper_service, storage_service, scheduler_service)
 print(f"✓ API Routes registradas")
@@ -38,41 +37,17 @@ print("="*60)
 
 
 if __name__ == '__main__':
-    # Iniciar scheduler para scraping automático
-    scheduler = BackgroundScheduler()
-    scheduler.add_job(scheduled_scrape, 'interval', hours=1, id='scrape_job')
-    scheduler.start()
+    print(f"\n[{datetime.now()}] Iniciando servicios...")
     
-    print("=" * 50)
-    print("INEGI Web Scraper API Starting...")
-    print("=" * 50)
-    
-    # Ejecutar scraping inicial
-    print("Running initial scrape...")
-    scheduled_scrape()
-    
-    print("\nAPI Endpoints:")
-    print("  - http://localhost:5000/")
-    print("  - http://localhost:5000/api/scrape")
-    print("  - http://localhost:5000/api/data")
-    print("  - http://localhost:5000/api/status")
-    print("=" * 50)
-    
-    try:
-        app.run(debug=True, port=5000, use_reloader=False)
-    except (KeyboardInterrupt, SystemExit):
-        scheduler.shutdown()
-        print("\nScheduler shut down successfully")print(f"\n[{datetime.now()}] Iniciando servicios...")
-    
-    # Iniciar scheduler
-    scheduler_service.start(Config.SCRAPING_INTERVAL_HOURS)
+    # Iniciar scheduler configurado para ejecutar cada 5 minutos
+    scheduler_service.start(Config.SCRAPING_INTERVAL_MINUTES)
     
     # Ejecutar scraping inicial
     print(f"\n[{datetime.now()}] Ejecutando scraping inicial...")
     scheduler_service.scheduled_scrape()
     
     print("\n" + "="*60)
-    print("🚀 API REST DISPONIBLE")
+    print("🚀 API REST DISPONIBLE - Cron Job cada 5 minutos")
     print("="*60)
     print(f"URL Base: http://localhost:{Config.PORT}")
     print(f"\nEndpoints principales:")
@@ -82,6 +57,8 @@ if __name__ == '__main__':
     print(f"  • GET  /api/status          - Estado del sistema")
     print(f"  • GET  /api/files           - Listar archivos")
     print(f"  • POST /api/schedule        - Configurar intervalo")
+    print("="*60)
+    print(f"⏰ Scraping automático cada {Config.SCRAPING_INTERVAL_MINUTES} minutos")
     print("="*60)
     
     try:
@@ -94,4 +71,4 @@ if __name__ == '__main__':
     except (KeyboardInterrupt, SystemExit):
         print(f"\n[{datetime.now()}] Deteniendo servicios...")
         scheduler_service.stop()
-        print(f"[{datetime.now()}] Aplicación cerrada correctamente
+        print(f"[{datetime.now()}] Aplicación cerrada correctamente")

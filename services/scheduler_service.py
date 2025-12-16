@@ -23,25 +23,25 @@ class SchedulerService:
         self.cached_data = {}
         self.is_running = False
     
-    def start(self, interval_hours=None):
+    def start(self, interval_minutes=None):
         """
         Inicia el scheduler con tareas programadas
         
         Args:
-            interval_hours (int): Intervalo en horas entre scraping
+            interval_minutes (int): Intervalo en minutos entre scraping
         """
         if self.is_running:
             print(f"[{datetime.now()}] [SchedulerService] Scheduler ya está ejecutándose")
             return
         
-        if interval_hours is None:
-            interval_hours = Config.SCRAPING_INTERVAL_HOURS
+        if interval_minutes is None:
+            interval_minutes = Config.SCRAPING_INTERVAL_MINUTES
         
         # Agregar tarea programada
         self.scheduler.add_job(
             self.scheduled_scrape,
             'interval',
-            hours=interval_hours,
+            minutes=interval_minutes,
             id='scrape_job',
             name='INEGI Scheduled Scraping'
         )
@@ -50,7 +50,7 @@ class SchedulerService:
         self.is_running = True
         
         print(f"[{datetime.now()}] [SchedulerService] Scheduler iniciado")
-        print(f"  - Intervalo: cada {interval_hours} hora(s)")
+        print(f"  - Intervalo: cada {interval_minutes} minuto(s)")
     
     def stop(self):
         """Detiene el scheduler"""
@@ -98,12 +98,12 @@ class SchedulerService:
         """
         self.cached_data = data
     
-    def update_interval(self, interval_hours):
+    def update_interval(self, interval_minutes):
         """
         Actualiza el intervalo de scraping
         
         Args:
-            interval_hours (int): Nuevo intervalo en horas
+            interval_minutes (int): Nuevo intervalo en minutos
         """
         try:
             if self.is_running:
@@ -114,12 +114,12 @@ class SchedulerService:
                 self.scheduler.add_job(
                     self.scheduled_scrape,
                     'interval',
-                    hours=interval_hours,
+                    minutes=interval_minutes,
                     id='scrape_job',
                     name='INEGI Scheduled Scraping'
                 )
                 
-                print(f"[{datetime.now()}] [SchedulerService] Intervalo actualizado a {interval_hours} hora(s)")
+                print(f"[{datetime.now()}] [SchedulerService] Intervalo actualizado a {interval_minutes} minuto(s)")
                 return True
             else:
                 print(f"[{datetime.now()}] [SchedulerService] Scheduler no está ejecutándose")
