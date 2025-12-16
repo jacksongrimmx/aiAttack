@@ -1,0 +1,12 @@
+# Archivos que Heroku debe ignorar
+*.pyc
+__pycache__/
+venv/
+.venv/
+.git/
+.vscode/
+.idea/
+*.log
+.env.local
+test_*.py
+data/

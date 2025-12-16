@@ -35,6 +35,16 @@ create_routes(app, scraper_service, storage_service, scheduler_service)
 print(f"✓ API Routes registradas")
 print("="*60)
 
+# Iniciar scheduler automáticamente (necesario para Heroku con gunicorn)
+print(f"\n[{datetime.now()}] Iniciando scheduler automático...")
+scheduler_service.start(Config.SCRAPING_INTERVAL_MINUTES)
+
+# Ejecutar scraping inicial
+print(f"[{datetime.now()}] Ejecutando scraping inicial...")
+scheduler_service.scheduled_scrape()
+print(f"[{datetime.now()}] ⏰ Scheduler activo - Próxima ejecución en {Config.SCRAPING_INTERVAL_MINUTES} minutos")
+print("="*60)
+
 
 if __name__ == '__main__':
     print(f"\n[{datetime.now()}] Iniciando servicios...")
